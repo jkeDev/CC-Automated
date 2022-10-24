@@ -4,8 +4,8 @@ branch = branch or 'main'
 
 local basePath = ('https://raw.githubusercontent.com/%s/%s/'):format(repo, branch)
 
-local function log(...) io.stdout.write(string.format(...)) end
-local function err(...) io.stderr.write(string.format(...)) end
+local function log(...) io.stdout:write(string.format(...)) end
+local function err(...) io.stderr:write(string.format(...)) end
 local function resolve(path, base)
     base = base or basePath .. 'src/'
     return basePath .. path
