@@ -1,5 +1,5 @@
 local repo, branch = ...
-repo = repo or 'jkeDev'
+repo = repo or 'jkeDev/CC-Automated'
 branch = branch or 'main'
 
 local basePath = ('https://raw.githubusercontent.com/%s/%s/'):format(repo, branch)
