@@ -30,7 +30,7 @@ end
 log("[INFO ] Fetching index from %s", resolve('index')) 
 local response = request('index')
 if response ~= nil then
-    for _,path = response.readLine do
+    for _,path in response.readLine do
         log("[INFO ] Downloading %s", path)
         local source = request(path)
         local target = fs.open(path, 'w')
