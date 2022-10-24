@@ -11,12 +11,12 @@ local function resolve(path, base)
     return basePath .. path
 end
 local function request(...)
-    local response  = http.get(resolve(...))
-    local status    = request.getResponseCode()
-    local triesLeft = 3
-    while status ~= 200 and triesLeft > 0 do
+    local response, err = http.get(resolve(...))
+    local status        = response.getResponseCode()
+    local triesLeft     = 3
+    while (status ~= 200 or err ~= nil) and triesLeft > 0 do
         response.close()
-        err("[FAIL ] Could not fetch file /%s", path)
+        err("[FAIL ] Could not fetch file /%s (%s)", path, err or tostring(status))
         triesLeft = triesLeft - 1
         status, response = http.get(basePath .. path)
     end
