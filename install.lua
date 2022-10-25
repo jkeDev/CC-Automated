@@ -17,14 +17,15 @@ local function resolve(path, base)
     return base .. path
 end
 local function request(...)
-    local response, err = http.get(resolve(...))
+    local path = resolve(...)
+    local response, err = http.get(path)
     local status        = response.getResponseCode()
     local triesLeft     = 3
     while (status ~= 200 or err ~= nil) and triesLeft > 0 do
         response.close()
         log(1, "Could not fetch file /%s (%s)", path, err or tostring(status))
         triesLeft = triesLeft - 1
-        status, response = http.get(basePath .. path)
+        status, response = http.get(path)
     end
     if status ~= 200 then
         response.close()
@@ -36,7 +37,7 @@ end
 log(0, "Fetching index from %s", resolve('index')) 
 local response = request('index')
 if response ~= nil then
-    for _,path in response.readLine do
+    for path in response.readLine do
         log(0, "Downloading %s", path)
         local source = request(path)
         local target = fs.open(path, 'w')
