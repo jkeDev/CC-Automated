@@ -10,7 +10,8 @@ local function log(lvl, ...)
             "[INFO ] ",
             "[WARN ] ",
             "[ERROR] "})[lvl]
-            .. string.format(...))
+            .. string.format(...)
+            .. '\n')
 end
 local function resolve(path, base)
     base = base or basePath .. 'src/'
