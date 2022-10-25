@@ -46,7 +46,10 @@ if response ~= nil then
             log(2, "Could not open file %s...", path)
             source.close()
         else
-            target.write(source.readAll())
+            target.write(
+                -- TODO: Check if multiple arguments to write are an issue
+                source.readAll()
+                :gsub('%s+', ' '))
             target.close()
             source.close()
         end
