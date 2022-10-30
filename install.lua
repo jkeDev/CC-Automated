@@ -20,19 +20,16 @@ end
 local function request(...)
     local path = resolve(...)
     local response, err = http.get(path)
-    local status        = response.getResponseCode()
     local triesLeft     = 3
-    while (status ~= 200 or err ~= nil) and triesLeft > 0 do
+    while (err ~= nil or response.getResponseCode() ~= 200) do
         response.close()
-        log(1, "Could not fetch file /%s (%s)", path, err or tostring(status))
-        triesLeft = triesLeft - 1
-        status, response = http.get(path)
+        if triesLeft > 0 then
+            log(1, "Could not fetch file /%s (%s)", path, err or tostring(status))
+            triesLeft = triesLeft - 1
+            response, err = http.get(path)
+        else return log(2, "All retries failed...") end
     end
-    if status ~= 200 then
-        response.close()
-        log(2, "All retries failed...")
-        return nil
-    else return response end
+    return response
 end
 
 log(0, "Fetching index from %s", resolve('index')) 
