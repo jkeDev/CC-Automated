@@ -4,13 +4,23 @@ branch = branch or 'main'
 
 local basePath = ('https://raw.githubusercontent.com/%s/%s/'):format(repo, branch)
 
-local function log(lvl, ...)
-    (lvl > 0 and io.stderr or io.stdout)
-        :write(({[0] =
-            "[INFO ] ",
-            "[WARN ] ",
-            "[ERROR] "})[lvl]
-            .. string.format(...))
+do 
+    local maxLvl = -1
+    local function log(lvl, ...)
+        if type(lvl) ~= 'number'
+            then return maxLvl end
+        maxLvl = math.max(maxLvl, lvl)
+        if lvl <
+            settings.get('logging.level',
+            branch == 'main' and 1 or 0)
+            then return end
+        (lvl > 0 and io.stderr or io.stdout)
+            :write(({[0] =
+                "[INFO ] ",
+                "[WARN ] ",
+                "[ERROR] "})[lvl]
+                .. string.format(...))
+    end
 end
 local function resolve(path, base)
     base = base or basePath .. 'src/'
@@ -53,4 +63,16 @@ if response ~= nil then
         end
     end
     response.close()
+end
+
+do
+    log(0, "Setting allow_startup to true")
+    settings.set("shell.allow_startup", true)
+    local maxLvl = log()
+    log(0, "Max log level reached %i", maxLvl)
+    if maxLvl > 1 then
+        log(2, "Please fix errors before continuing.")
+    elseif maxLvl > 0 then
+        log(0, "Please review warnings before rebooting...")
+    else os.reboot() end
 end
