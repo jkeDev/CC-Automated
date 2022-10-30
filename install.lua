@@ -46,7 +46,6 @@ if response ~= nil then
             source.close()
         else
             target.write(
-                -- TODO: Check if multiple arguments to write are an issue
                 source.readAll()
                 :gsub('%s+', ' '))
             target.close()
