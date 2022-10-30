@@ -68,6 +68,7 @@ end
 do
     log(0, "Setting allow_startup to true")
     settings.set("shell.allow_startup", true)
+    settings.save()
     local maxLvl = log()
     log(0, "Max log level reached %i", maxLvl)
     if maxLvl > 1 then
